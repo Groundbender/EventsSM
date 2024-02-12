@@ -23,7 +23,7 @@ const SignedInMenu = ({ setAuth }: Props) => {
         <Dropdown.Menu>
           <Dropdown.Item as={Link} to="/createEvent" text="Create Event" icon="plus" />
           <Dropdown.Item text="My prfile" icon="user" />
-          <Dropdown.Item text="Sign out" icon="poser" onClick={handleSignOut} />
+          <Dropdown.Item text="Sign out" icon="power" onClick={handleSignOut} />
 
         </Dropdown.Menu>
       </Dropdown>

@@ -1,7 +1,13 @@
 import { Link, useParams } from "react-router-dom"
 import { Button, Header, Item, Segment, Image } from "semantic-ui-react"
+import { AppEvent } from "../../../app/types/events"
 
-const EventDetailsHeader = () => {
+
+type Props = {
+  event: AppEvent
+}
+
+const EventDetailsHeader = ({ event }: Props) => {
 
 
   const { id } = useParams()
@@ -22,7 +28,7 @@ const EventDetailsHeader = () => {
   return (
     <Segment.Group>
       <Segment basic attached="top" style={{ padding: '0' }}>
-        <Image src={`/categoryImages/drinks.jpg`} fluid style={eventsImageStyle} />
+        <Image src={`/categoryImages/${event.category}.jpg`} fluid style={eventsImageStyle} />
 
         <Segment basic style={eventsImageTextStyle}>
           <Item.Group>
@@ -30,12 +36,12 @@ const EventDetailsHeader = () => {
               <Item.Content>
                 <Header
                   size="huge"
-                  content='Event Title'
+                  content={event.title}
                   style={{ color: 'white' }}
                 />
-                <p>Event Date</p>
+                <p>{event.date}</p>
                 <p>
-                  Hosted by <strong>Bob</strong>
+                  Hosted by <strong>{event.hostedBy}</strong>
                 </p>
               </Item.Content>
             </Item>
@@ -47,7 +53,7 @@ const EventDetailsHeader = () => {
         <Button>Cancel My Place</Button>
         <Button color="teal">JOIN THIS EVENT</Button>
 
-        <Button as={Link} to={`/events/${id}/manage `} color="orange" floated="right">
+        <Button as={Link} to={`/manage/${event.id}`} color="orange" floated="right">
           Manage Event
         </Button>
       </Segment>
