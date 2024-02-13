@@ -23,9 +23,12 @@ const EventForm = () => {
 
 
   function onSubmit(data: FieldValues) {
+    id = id ?? createId();
+
+    event ? dispatch(updateEvent({ ...data, id, date: data.date.toString() })) : dispatch(createEvent({ ...data, id, hostedBy: 'Bob', attendees: [], hostPhotoURL: '', date: data.date.toString() }));
+    navigate(`/events/${id}`)
 
 
-    console.log(data);
 
 
   }
