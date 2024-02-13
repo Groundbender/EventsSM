@@ -5,6 +5,8 @@ import { createEvent, updateEvent } from "../eventSlice";
 import { createId } from "@paralleldrive/cuid2";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { categoryOptions } from "./categoryOptions";
+import "react-datepicker/dist/react-datepicker.css"
+import DatePicker from "react-datepicker"
 
 
 const EventForm = () => {
@@ -54,7 +56,34 @@ const EventForm = () => {
 
         <Form.Input placeholder="Venue" defaultValue={event?.venue || ""} {...register("venue", { required: "Venue is required" })} error={errors.venue && errors.venue.message} />
 
-        <Form.Input type="date" placeholder="Date" defaultValue={event?.date || ""} {...register("date", { required: "Date is required" })} error={errors.date && errors.date.message} />
+        <Form.Field>
+          <Controller name="date" control={control}
+            rules={{ required: "Date is required" }}
+            defaultValue={event && new Date(event.date) || null}
+            render={({ field }) => (
+              <DatePicker
+                placeholderText="Event date and time"
+                selected={field.value}
+                showTimeSelect
+                timeCaption="time"
+                autoComplete="off"
+                dateFormat="MMMM d, yyyy h:mm aa"
+                {...field}
+                onChange={(value) => setValue("date", value, {
+                  shouldValidate: true
+                })}
+              />
+            )}
+
+          />
+
+        </Form.Field>
+
+        {/* <Form.Input type="date" placeholder="Date" defaultValue={event?.date || ""} {...register("date", { required: "Date is required" })} error={errors.date && errors.date.message} /> */}
+
+
+
+
         <Button disabled={!isValid || isSubmitting} type="submit" floated="right" positive content="Submit" />
         <Button as={Link} to="/events" type="button" floated="right" content="Cancel" />
       </Form>
