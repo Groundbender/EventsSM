@@ -37,7 +37,9 @@ const EventForm = () => {
 
 
         <Controller name="category" control={control} rules={{ required: "Category is required" }} defaultValue={event?.category} render={({ field }) => (
-          <Form.Select clearable options={categoryOptions} placeholder=" Category" {...field} onChange={(_, data) => setValue("category", data.value)} error={errors.category && errors.category.message} />
+          <Form.Select clearable options={categoryOptions} placeholder=" Category" {...field} onChange={(_, data) => setValue("category", data.value, {
+            shouldValidate: true
+          })} error={errors.category && errors.category.message} />
 
 
         )} />
