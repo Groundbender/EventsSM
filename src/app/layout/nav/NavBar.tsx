@@ -3,12 +3,13 @@ import { Button, Container, Menu, MenuItem } from "semantic-ui-react"
 import SignedOutButtons from "./SignedOutButtons"
 import SignedInMenu from "./SignedInMenu"
 import { useState } from "react"
+import { useAppSelector } from "../../store/store"
 
 
 const NavBar = () => {
 
+  const { authenticated } = useAppSelector((state) => state.auth)
 
-  const [auth, setAuth] = useState(true)
 
   return (
     <Menu inverted fixed="top">
@@ -21,7 +22,7 @@ const NavBar = () => {
         <MenuItem>
           <Button as={NavLink} to="/createEvent" floated="right" positive={true} inverted content="Create event" />
         </MenuItem>
-        {auth ? <SignedInMenu setAuth={setAuth} /> : <SignedOutButtons setAuth={setAuth} />}
+        {authenticated ? <SignedInMenu /> : <SignedOutButtons />}
       </Container>
     </Menu>
   )
