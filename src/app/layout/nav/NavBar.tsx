@@ -2,13 +2,29 @@ import { NavLink } from "react-router-dom"
 import { Button, Container, Menu, MenuItem } from "semantic-ui-react"
 import SignedOutButtons from "./SignedOutButtons"
 import SignedInMenu from "./SignedInMenu"
-import { useState } from "react"
 import { useAppSelector } from "../../store/store"
+import { sampleData } from "../../api/sampleData"
+import { doc, setDoc } from "firebase/firestore"
+import { db } from "../../config/firebase"
 
 
 const NavBar = () => {
 
   const { authenticated } = useAppSelector((state) => state.auth)
+
+
+  function seedData() {
+    sampleData.forEach((async event => {
+      const { id, ...rest } = event;
+      // Функция doc() в Firestore используется для создания ссылки на определенный документ в базе данных Firestore.
+      // db - наша база данных из конфига
+      // events - название коллекции
+      // id - id документа event в коллекции events
+      await setDoc(doc(db, "events", id), {
+        ...rest
+      })
+    }))
+  }
 
 
   return (
@@ -22,6 +38,16 @@ const NavBar = () => {
         <MenuItem>
           <Button as={NavLink} to="/createEvent" floated="right" positive={true} inverted content="Create event" />
         </MenuItem>
+        {import.meta.env.DEV && (
+          <MenuItem>
+            <Button
+              inverted
+              color="teal"
+              content="Show sample data"
+              onClick={seedData}
+            />
+          </MenuItem>
+        )}
         {authenticated ? <SignedInMenu /> : <SignedOutButtons />}
       </Container>
     </Menu>
