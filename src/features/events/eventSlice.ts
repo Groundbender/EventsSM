@@ -20,7 +20,11 @@ export const eventSlice = createSlice({
         state.events = action.payload
       },
       prepare: (events: any) => {
-        const mapped = events.map((e: any) => {
+        let eventArray: AppEvent[] = [];
+
+        Array.isArray(events) ? eventArray = events : eventArray.push(events)
+
+        const mapped = eventArray.map((e: any) => {
           return {...e, date: (e.date as Timestamp).toDate().toISOString()}
         })
 

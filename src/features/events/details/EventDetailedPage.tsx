@@ -4,11 +4,46 @@ import EventDetailedHeader from "./EventDetailedHeader"
 import EventDetailedInfo from "./EventDetailedInfo"
 import EventDetailedChat from "./EventDetailedChat"
 import EventDetailedSidebar from "./EventDetailedSidebar"
-import { useAppSelector } from "../../../app/store/store"
+import { useAppDispatch, useAppSelector } from "../../../app/store/store"
+import { useEffect, useState } from "react"
+import { doc, onSnapshot } from "firebase/firestore"
+import { setEvents } from "../eventSlice"
+import { db } from "../../../app/config/firebase"
+import { toast } from "react-toastify"
+import LoadingComponent from "../../../app/layout/LoadingComponent"
 
 const EventDetailsPage = () => {
   const { id } = useParams();
   const event = useAppSelector(state => state.events.events.find(event => event.id === id))
+  const dispatch = useAppDispatch()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!id) return
+    const unsubscribe = onSnapshot(doc(db, "events", id), {
+      next: doc => {
+        dispatch(setEvents({ id: doc.id, ...doc.data() }))
+        setLoading(false)
+      },
+      error: err => {
+        console.log(err)
+        toast.error(err.message)
+        setLoading(false)
+      }
+    })
+
+
+
+    return () => {
+      unsubscribe()
+    }
+  }, [id, dispatch])
+
+
+  if (loading) {
+    return <LoadingComponent />
+  }
+
 
 
   if (!event) return <h2>Event not found</h2>
