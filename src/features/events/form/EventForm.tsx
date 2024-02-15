@@ -1,12 +1,13 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { Button, Form, Header, Segment } from "semantic-ui-react"
-import { useAppDispatch, useAppSelector } from "../../../app/store/store";
-import { createEvent, updateEvent } from "../eventSlice";
-import { createId } from "@paralleldrive/cuid2";
+import { useAppSelector } from "../../../app/store/store";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { categoryOptions } from "./categoryOptions";
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker"
+import { AppEvent } from "../../../app/types/events";
+import { Timestamp, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../app/config/firebase";
 
 
 const EventForm = () => {
@@ -14,19 +15,59 @@ const EventForm = () => {
     mode: 'onBlur',
 
   });
-  let { id } = useParams();
+  const { id } = useParams();
   const event = useAppSelector(state => state.events.events.find(event => event.id === id))
-  const dispatch = useAppDispatch()
+  // const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
 
 
 
-  function onSubmit(data: FieldValues) {
-    id = id ?? createId();
+  async function updateEvent(data: AppEvent) {
+    if (!event) return
 
-    event ? dispatch(updateEvent({ ...data, id, date: data.date.toString() })) : dispatch(createEvent({ ...data, id, hostedBy: 'Bob', attendees: [], hostPhotoURL: '', date: data.date.toString() }));
-    navigate(`/events/${id}`)
+    // doc создает ссылку на конкретный документ в коллекции "events" с указанным идентификатором event.id.
+    // updateDoc выполняет асинхронное обновление указанного документа с новыми данными ...data.
+    const docRef = doc(db, "events", event.id)
+    await updateDoc(docRef, {
+      ...data, date: Timestamp.fromDate(data.date as unknown as Date)
+    })
+  }
+
+
+  async function createEvent(data: FieldValues) {
+    // подход чтобы сгенерировать id изначально, если setDoc - нам нужна передать id, если addDoc - firebase сгенерирует его за нас 
+    // тут мы получим id из newEventRef
+    const newEventRef = doc(collection(db, "events"));
+    await setDoc(newEventRef, {
+      ...data,
+      hostedBy: "bob",
+      attendees: [],
+      hostPhotoURL: "",
+      date: Timestamp.fromDate(data.date as unknown as Date)
+    })
+
+    return newEventRef
+  }
+
+
+
+
+  async function onSubmit(data: FieldValues) {
+    try {
+      if (event) {
+        await updateEvent({ ...event, ...data })
+        navigate(`/events/${event.id}`)
+      } else {
+
+        const ref = await createEvent(data)
+        // id из newEventRef 
+        navigate(`/events/${ref.id}`)
+      }
+    } catch (e) {
+      console.log(e);
+
+    }
 
 
 
