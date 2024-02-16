@@ -2,8 +2,10 @@ import { Button, Icon, Item, ItemGroup, List, Segment, SegmentGroup } from "sema
 import EventListAttendee from "./EventListAttendee"
 import { AppEvent, Attendee } from "../../../app/types/events"
 import { Link } from "react-router-dom"
-import { useAppDispatch } from "../../../app/store/store"
-import { deleteEvent } from "../eventSlice"
+import { useState } from "react"
+import { toast } from "react-toastify"
+import { deleteDoc, doc } from "firebase/firestore"
+import { db } from "../../../app/config/firebase"
 
 
 type Props = {
@@ -12,7 +14,26 @@ type Props = {
 }
 const EventListItem = ({ event }: Props) => {
 
-  const dispatch = useAppDispatch()
+  const [loading, setLoading] = useState(false)
+
+
+
+  async function removeEvent() {
+    setLoading(true);
+    try {
+      await deleteDoc(doc(db, "events", event.id));
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
+
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
 
   return (
     <SegmentGroup>
@@ -45,8 +66,8 @@ const EventListItem = ({ event }: Props) => {
       </Segment>
       <Segment clearing>
         <span>{event.description}</span>
+        <Button loading={loading} onClick={() => removeEvent()} color="red" floated="right" content="Delete" />
         <Button as={Link} to={`/events/${event.id}`} color="teal" floated="right" content="View" />
-        <Button onClick={() => dispatch(deleteEvent(event.id))} color="red" floated="right" content="Delete" />
       </Segment>
     </SegmentGroup>
   )
