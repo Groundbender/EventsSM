@@ -10,7 +10,7 @@ const SignedOutButtons = () => {
   return (
     <MenuItem position="right">
       <Button onClick={() => dispatch(openModal({ type: "LoginForm" }))} basic inverted content="Login" />
-      <Button basic inverted content="Register" style={{ marginLeft: "0.5em" }} />
+      <Button onClick={() => dispatch(openModal({ type: "RegisterForm" }))} basic inverted content="Register" style={{ marginLeft: "0.5em" }} />
     </MenuItem>
   )
 }

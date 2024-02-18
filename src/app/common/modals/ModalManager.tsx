@@ -1,9 +1,11 @@
 import { useAppSelector } from "../../store/store"
 import LoginForm from "../../../features/auth/LoginForm"
+import RegisterForm from "../../../features/auth/RegisterForm"
 const ModalManager = () => {
 
   const modalLookup = {
-    LoginForm
+    LoginForm,
+    RegisterForm
   }
 
 
