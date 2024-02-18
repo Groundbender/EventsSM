@@ -6,6 +6,7 @@ import { useState } from "react"
 import { toast } from "react-toastify"
 import { deleteDoc, doc } from "firebase/firestore"
 import { db } from "../../../app/config/firebase"
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
 
 
 type Props = {
@@ -14,24 +15,25 @@ type Props = {
 }
 const EventListItem = ({ event }: Props) => {
 
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
+  const { remove } = useFireStore("events")
 
 
 
-  async function removeEvent() {
-    setLoading(true);
-    try {
-      await deleteDoc(doc(db, "events", event.id));
-    } catch (error) {
-      console.log(error);
-      if (error instanceof Error) {
-        toast.error(error.message)
-      }
+  // async function removeEvent() {
+  //   // setLoading(true);
+  //   // try {
+  //   //   await deleteDoc(doc(db, "events", event.id));
+  //   // } catch (error) {
+  //   //   console.log(error);
+  //   //   if (error instanceof Error) {
+  //   //     toast.error(error.message)
+  //   //   }
 
-    } finally {
-      setLoading(false)
-    }
-  }
+  //   // } finally {
+  //   //   setLoading(false)
+  //   // }
+  // }
 
 
 
@@ -66,7 +68,7 @@ const EventListItem = ({ event }: Props) => {
       </Segment>
       <Segment clearing>
         <span>{event.description}</span>
-        <Button loading={loading} onClick={() => removeEvent()} color="red" floated="right" content="Delete" />
+        <Button onClick={() => remove(event.id)} color="red" floated="right" content="Delete" />
         <Button as={Link} to={`/events/${event.id}`} color="teal" floated="right" content="View" />
       </Segment>
     </SegmentGroup>

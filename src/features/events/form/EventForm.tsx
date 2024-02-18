@@ -9,17 +9,37 @@ import { AppEvent } from "../../../app/types/events";
 import { Timestamp, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../app/config/firebase";
 import { toast } from "react-toastify";
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
+import { useEffect } from "react";
+import { actions } from "../eventSlice";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
 const EventForm = () => {
+
   const { register, handleSubmit, control, setValue, formState: { errors, isValid, isSubmitting } } = useForm({
     mode: 'onBlur',
+    defaultValues: async () => {
+      if (event) {
+        return { ...event, date: new Date(event.date) }
+      }
+    }
+
 
   });
   const { id } = useParams();
-  const event = useAppSelector(state => state.events.events.find(event => event.id === id))
+  const event = useAppSelector(state => state.events.data.find(event => event.id === id))
   // const dispatch = useAppDispatch()
   const navigate = useNavigate()
+
+  const { loadDocument, create, update } = useFireStore("events");
+  const { status } = useAppSelector((state) => state.events)
+
+
+  useEffect(() => {
+    if (!id) return
+    loadDocument(id, actions)
+  }, [id, loadDocument])
 
 
 
@@ -27,20 +47,23 @@ const EventForm = () => {
   async function updateEvent(data: AppEvent) {
     if (!event) return
 
+    await update(event.id, {
+      ...data,
+      date: Timestamp.fromDate(data.date as unknown as Date)
+    })
+
     // doc создает ссылку на конкретный документ в коллекции "events" с указанным идентификатором event.id.
     // updateDoc выполняет асинхронное обновление указанного документа с новыми данными ...data.
-    const docRef = doc(db, "events", event.id)
-    await updateDoc(docRef, {
-      ...data, date: Timestamp.fromDate(data.date as unknown as Date)
-    })
+    // const docRef = doc(db, "events", event.id)
+    // await updateDoc(docRef, {
+    //   ...data, date: Timestamp.fromDate(data.date as unknown as Date)
+    // })
   }
 
 
   async function createEvent(data: FieldValues) {
-    // подход чтобы сгенерировать id изначально, если setDoc - нам нужна передать id, если addDoc - firebase сгенерирует его за нас 
-    // тут мы получим id из newEventRef
-    const newEventRef = doc(collection(db, "events"));
-    await setDoc(newEventRef, {
+
+    const ref = await create({
       ...data,
       hostedBy: "bob",
       attendees: [],
@@ -48,7 +71,21 @@ const EventForm = () => {
       date: Timestamp.fromDate(data.date as unknown as Date)
     })
 
-    return newEventRef
+
+    return ref
+
+    // подход чтобы сгенерировать id изначально, если setDoc - нам нужна передать id, если addDoc - firebase сгенерирует его за нас 
+    // тут мы получим id из newEventRef
+    // const newEventRef = doc(collection(db, "events"));
+    // await setDoc(newEventRef, {
+    //   ...data,
+    //   hostedBy: "bob",
+    //   attendees: [],
+    //   hostPhotoURL: "",
+    //   date: Timestamp.fromDate(data.date as unknown as Date)
+    // })
+
+    // return newEventRef
   }
 
 
@@ -63,7 +100,7 @@ const EventForm = () => {
 
         const ref = await createEvent(data)
         // id из newEventRef 
-        navigate(`/events/${ref.id}`)
+        navigate(`/events/${ref?.id}`)
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -72,11 +109,13 @@ const EventForm = () => {
       }
 
     }
-
-
-
-
   }
+
+
+  if (status === "loading") {
+    return <LoadingComponent />
+  }
+
 
 
   return (

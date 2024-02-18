@@ -7,40 +7,48 @@ import EventDetailedSidebar from "./EventDetailedSidebar"
 import { useAppDispatch, useAppSelector } from "../../../app/store/store"
 import { useEffect, useState } from "react"
 import { doc, onSnapshot } from "firebase/firestore"
-import { setEvents } from "../eventSlice"
+import { actions } from "../eventSlice"
 import { db } from "../../../app/config/firebase"
 import { toast } from "react-toastify"
 import LoadingComponent from "../../../app/layout/LoadingComponent"
+import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
 
 const EventDetailsPage = () => {
   const { id } = useParams();
-  const event = useAppSelector(state => state.events.events.find(event => event.id === id))
-  const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState(true)
+  const event = useAppSelector(state => state.events.data.find(event => event.id === id))
+
+  const { status } = useAppSelector(state => state.events)
+  // const dispatch = useAppDispatch()
+  // const [loading, setLoading] = useState(true)
+  const { loadDocument } = useFireStore("events")
+
+  // useEffect(() => {
+  //    // if (!id) return
+  //   // const unsubscribe = onSnapshot(doc(db, "events", id), {
+  //   //   next: doc => {
+  //   //     dispatch(actions.success({ id: doc.id, ...doc.data() } as any))
+  //   //     setLoading(false)
+  //   //   },
+  //   //   error: err => {
+  //   //     console.log(err)
+  //   //     toast.error(err.message)
+  //   //     setLoading(false)
+  //   //   }
+  //   // })
+  //   return () => {
+  //     unsubscribe()
+  //   }
+  // }, [id, dispatch])
 
   useEffect(() => {
     if (!id) return
-    const unsubscribe = onSnapshot(doc(db, "events", id), {
-      next: doc => {
-        dispatch(setEvents({ id: doc.id, ...doc.data() }))
-        setLoading(false)
-      },
-      error: err => {
-        console.log(err)
-        toast.error(err.message)
-        setLoading(false)
-      }
-    })
+
+    loadDocument(id, actions)
+
+  }, [id, loadDocument])
 
 
-
-    return () => {
-      unsubscribe()
-    }
-  }, [id, dispatch])
-
-
-  if (loading) {
+  if (status === "loading") {
     return <LoadingComponent />
   }
 
