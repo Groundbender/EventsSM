@@ -3,6 +3,9 @@ import { initializeApp } from "firebase/app";
 // 1 добавляем импорты для firestore
 import "firebase/firestore"
 import { getFirestore } from "firebase/firestore";
+// auth
+import "firebase/auth"
+import { getAuth } from "firebase/auth";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "events-social-media.firebaseapp.com",
@@ -18,3 +21,4 @@ const app = initializeApp(firebaseConfig);
 
 // 2 добавляем getFirestore, можно импортировать lite версию с меньшим количеством функций
 export const db = getFirestore(app)
+export const auth = getAuth(app)

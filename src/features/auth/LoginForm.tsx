@@ -4,6 +4,8 @@ import { FieldValues, useForm } from "react-hook-form"
 import { useAppDispatch } from "../../app/store/store"
 import { closeModal } from "../../app/common/modals/modalSlice"
 import { signIn } from "./authSlice"
+import { signInWithEmailAndPassword } from "@firebase/auth"
+import { auth } from "../../app/config/firebase"
 
 const LoginForm = () => {
 
@@ -13,10 +15,19 @@ const LoginForm = () => {
 
   const dispatch = useAppDispatch();
 
-  function onSubmit(data: FieldValues) {
-    console.log(data);
-    dispatch(signIn(data))
-    dispatch(closeModal())
+  async function onSubmit(data: FieldValues) {
+
+    try {
+      // можем убрать dispatch здесь, так как в App.tsx уже есть observer, который отслеживает статус авторзованного usera
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      // dispatch(signIn(result.user))
+      dispatch(closeModal())
+
+      // console.log(result);
+    } catch (error) {
+      console.log(error);
+
+    }
 
   }
 
