@@ -6,6 +6,8 @@ import { closeModal } from "../../app/common/modals/modalSlice"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "@firebase/auth"
 import { auth } from "../../app/config/firebase"
 import { signIn } from "./authSlice"
+import { useFireStore } from "../../app/hooks/firestore/useFirestore"
+import { Timestamp } from "@firebase/firestore"
 
 const RegsiterForm = () => {
 
@@ -14,6 +16,7 @@ const RegsiterForm = () => {
   })
 
   const dispatch = useAppDispatch();
+  const { set } = useFireStore("profiles")
 
   async function onSubmit(data: FieldValues) {
 
@@ -25,7 +28,11 @@ const RegsiterForm = () => {
       await updateProfile(userCreds.user, {
         displayName: data.displayName
       })
-
+      await set(userCreds.user.uid, {
+        displayName: data.displayName,
+        email: data.email,
+        createdAt: Timestamp.now()
+      })
       dispatch(signIn(userCreds.user))
       dispatch(closeModal())
 

@@ -136,14 +136,27 @@ const remove = async (id : string) => {
     toast.error((error as  Error).message)
   }
 }
- 
+
+
+ const set = async (id: string, data: any) => {
+  try {
+
+    return await setDoc(doc(db, path, id), data)
+    
+  } catch (error) {
+      console.log(error);
+      toast.error((error as  Error).message)
+      
+  }
+ }
 
   return {
     loadCollection,
     loadDocument,
     create,
     update,
-    remove
+    remove,
+    set
   }
 
 }
