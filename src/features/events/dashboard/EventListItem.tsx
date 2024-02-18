@@ -1,4 +1,4 @@
-import { Button, Icon, Item, ItemGroup, List, Segment, SegmentGroup } from "semantic-ui-react"
+import { Button, Icon, Item, ItemGroup, Label, List, Segment, SegmentGroup } from "semantic-ui-react"
 import EventListAttendee from "./EventListAttendee"
 import { AppEvent, Attendee } from "../../../app/types/events"
 import { Link } from "react-router-dom"
@@ -16,7 +16,7 @@ type Props = {
 const EventListItem = ({ event }: Props) => {
 
   // const [loading, setLoading] = useState(false)
-  const { remove } = useFireStore("events")
+  // const { remove } = useFireStore("events")
 
 
 
@@ -48,6 +48,14 @@ const EventListItem = ({ event }: Props) => {
               <Item.Description>
                 Hosted by {event.hostedBy}
               </Item.Description>
+              {event.isCancelled && (
+                <Label
+                  style={{ top: '-40px' }}
+                  ribbon="right"
+                  color="red"
+                  content="This event has been cancelled"
+                />
+              )}
             </Item.Content>
           </Item>
         </ItemGroup>
@@ -68,7 +76,7 @@ const EventListItem = ({ event }: Props) => {
       </Segment>
       <Segment clearing>
         <span>{event.description}</span>
-        <Button onClick={() => remove(event.id)} color="red" floated="right" content="Delete" />
+        {/* <Button onClick={() => remove(event.id)} color="red" floated="right" content="Delete" /> */}
         <Button as={Link} to={`/events/${event.id}`} color="teal" floated="right" content="View" />
       </Segment>
     </SegmentGroup>

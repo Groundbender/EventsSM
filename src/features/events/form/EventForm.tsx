@@ -88,6 +88,13 @@ const EventForm = () => {
     // return newEventRef
   }
 
+  async function handleCancelToggle(event: AppEvent) {
+    await update(event.id, {
+      isCancelled: !event.isCancelled
+    })
+    toast.success(`Event has been ${event.isCancelled ? "Uncancelled" : "Cancelled"}`)
+  }
+
 
 
 
@@ -169,6 +176,17 @@ const EventForm = () => {
         {/* <Form.Input type="date" placeholder="Date" defaultValue={event?.date || ""} {...register("date", { required: "Date is required" })} error={errors.date && errors.date.message} /> */}
 
 
+
+        {event && (
+          <Button
+            floated="left"
+            type="button"
+            color={event.isCancelled ? "green" : "red"}
+            content={event.isCancelled ? "Re-activate Event" : "Cancel Event"}
+            onClick={() => handleCancelToggle(event)}
+
+          />
+        )}
 
 
         <Button disabled={!isValid || isSubmitting} type="submit" floated="right" positive content="Submit" />
