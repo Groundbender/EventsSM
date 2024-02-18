@@ -1,4 +1,4 @@
-import { Button, Form } from "semantic-ui-react"
+import { Button, Form, Label } from "semantic-ui-react"
 import ModalWrapper from "../../app/common/modals/ModalWrapper"
 import { FieldValues, useForm } from "react-hook-form"
 import { useAppDispatch } from "../../app/store/store"
@@ -9,7 +9,7 @@ import { signIn } from "./authSlice"
 
 const RegsiterForm = () => {
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid, isDirty } } = useForm({
+  const { register, handleSubmit, setError, formState: { errors, isSubmitting, isValid, isDirty } } = useForm({
     mode: "onTouched"
   })
 
@@ -32,6 +32,10 @@ const RegsiterForm = () => {
       // console.log(result);
     } catch (error) {
       console.log(error);
+
+      setError("root.serverError", {
+        type: "400", message: (error as Error).message
+      })
 
     }
 
@@ -61,6 +65,15 @@ const RegsiterForm = () => {
           {...register("password", { required: true, minLength: 5 })}
           error={errors.password?.type === "required" && "Password is required" || errors.password?.type === "minLength" && "Password should be at least 5 characters"}
         />
+        {errors.root && (
+
+          <Label
+            basic
+            color="red"
+            style={{ display: "block", marginBottom: 10 }}
+            content={errors.root.serverError.message}
+          />
+        )}
 
         <Button
           loading={isSubmitting}
@@ -72,7 +85,7 @@ const RegsiterForm = () => {
           content="Register"
         />
       </Form>
-    </ModalWrapper>
+    </ModalWrapper >
   )
 }
 export default RegsiterForm
