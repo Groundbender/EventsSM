@@ -20,5 +20,7 @@ const app = initializeApp(firebaseConfig);
 
 
 // 2 добавляем getFirestore, можно импортировать lite версию с меньшим количеством функций
+//firestore
 export const db = getFirestore(app)
+// firebase auth
 export const auth = getAuth(app)

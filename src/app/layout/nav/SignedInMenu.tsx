@@ -22,7 +22,7 @@ const SignedInMenu = () => {
   return (
     <Menu.Item position="right">
       <Image avatar spaced="right" src={currentUser?.photoUrl || "/user.png"} />
-      <Dropdown pointing="top left" text={currentUser?.email as string}>
+      <Dropdown pointing="top left" text={currentUser?.displayName as string}>
         <Dropdown.Menu>
           <Dropdown.Item as={Link} to="/createEvent" text="Create Event" icon="plus" />
           <Dropdown.Item text="My prfile" icon="user" />

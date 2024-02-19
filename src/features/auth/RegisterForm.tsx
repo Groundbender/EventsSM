@@ -48,6 +48,8 @@ const RegsiterForm = () => {
 
   }
 
+
+
   return (
     <ModalWrapper header="Sign up">
       <Form onSubmit={handleSubmit(onSubmit)}>
