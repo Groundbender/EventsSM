@@ -2,14 +2,24 @@ import { FieldValues, useForm } from "react-hook-form"
 import { Link } from "react-router-dom";
 import { Button, Form, Header, Icon, Segment } from "semantic-ui-react";
 import { useAppSelector } from "../../app/store/store";
+import { useEffect } from "react";
 
 const AccountPage = () => {
 
   const { currentUser } = useAppSelector(state => state.auth)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, getValues, watch, trigger } = useForm({
     mode: "onTouched"
   })
+
+  // когда мы заполняем второе поле и пароли не совпадают, показывается ошибка, но когда мы в процессе меняем первое поле, ошибки нет, поэтому с помощью watch отслеживаем для первого поля состояние второго 
+  const password1 = watch("password1")
+  const password2 = watch("password2")
+
+
+  useEffect(() => {
+    if (password2) trigger("password2")
+  }, [password2, trigger, password1])
 
   function onSubmit(data: FieldValues) {
     console.log(data);
@@ -41,9 +51,12 @@ const AccountPage = () => {
               placeholder="Confirm Password"
               {...register("password2", {
                 required: true,
+                validate: {
+                  passwordMatch: value => (value === getValues().password1 || "Passwords do not match")
+                }
 
               })}
-              error={errors.password2 && "Confirm Password is required"}
+              error={errors.password2?.type === "required" && "Confirm Password is required" || errors.password2?.type === "passwordMatch" && errors.password2.message}
             />
             <Button disabled={!isValid || isSubmitting} loading={isSubmitting} size="large" positive type="submit" content="Update password" />
           </Form>
