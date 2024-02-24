@@ -6,6 +6,9 @@ import { getFirestore } from "firebase/firestore";
 // auth
 import "firebase/auth"
 import { getAuth } from "firebase/auth";
+// storage
+import "firebase/storage"
+import { getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "events-social-media.firebaseapp.com",
@@ -24,3 +27,5 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app)
 // firebase auth
 export const auth = getAuth(app)
+// firebase storage
+export const storage = getStorage(app)   
