@@ -1,10 +1,17 @@
 import { Tab } from "semantic-ui-react"
+import ProfileAbout from "./ProfileAbout"
+import { Profile } from "../../app/types/profile"
+import ProfilePhotos from "./ProfilePhotos"
 
-const ProfileContent = () => {
+type Props = {
+  profile: Profile
+}
+
+const ProfileContent = ({ profile }: Props) => {
 
   const panes = [
-    { menuItem: "About", render: () => <Tab.Pane>About</Tab.Pane> },
-    { menuItem: "Photos", render: () => <Tab.Pane>Photos</Tab.Pane> },
+    { menuItem: "About", render: () => <ProfileAbout profile={profile} /> },
+    { menuItem: "Photos", render: () => <ProfilePhotos profile={profile} /> },
     { menuItem: "Events", render: () => <Tab.Pane>Events</Tab.Pane> },
     { menuItem: "Followers", render: () => <Tab.Pane>Followers</Tab.Pane> },
     { menuItem: "Following", render: () => <Tab.Pane>Following</Tab.Pane> },
