@@ -5,13 +5,13 @@ export type CollectionOptions = {
   sort?: SortOptions
 }
 
-type QueryOptions = {
+export type QueryOptions = {
   attribute: string,
   operator: WhereFilterOp
   value: string | number | boolean | Date | any[]
 }
 
-type SortOptions = {
+export type SortOptions = {
   attribute: string
   order: OrderByDirection
 }

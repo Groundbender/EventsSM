@@ -10,6 +10,8 @@ import { actions } from "../eventSlice"
 import LoadingComponent from "../../../app/layout/LoadingComponent"
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
 import EventFilters from "./EventFilters"
+import { QueryOptions } from "../../../app/hooks/firestore/types"
+import EventListItemPlaceholder from "./EventListItemPlaceholder"
 
 
 
@@ -19,6 +21,13 @@ const EventDashboard = () => {
   // const dispatch = useAppDispatch()
   // const [loading, setLoading] = useState(true)
   const { loadCollection } = useFireStore("events")
+  const [query, setQuery] = useState<QueryOptions[]>([
+    {
+      attribute: "date",
+      operator: ">=",
+      value: new Date()
+    }
+  ])
 
   useEffect(() => {
     // // collection для создания ссылки на коллекцию по имени events 
@@ -54,31 +63,30 @@ const EventDashboard = () => {
     // return () => unsubscribe()
 
     loadCollection(actions, {
-      queries: [
-        {
-          attribute: "date",
-          operator: ">=",
-          value: new Date()
-        }
-      ]
+      queries: query
     })
 
-  }, [loadCollection])
+  }, [loadCollection, query])
 
 
-  if (status === "loading") {
-    return <LoadingComponent />
-  }
 
 
 
   return (
     <Grid>
       <Grid.Column width={10}>
-        <EventList events={events} />
+        {status === "loading" ? (
+          <>
+            <EventListItemPlaceholder />
+            <EventListItemPlaceholder />
+          </>
+        ) : (
+
+          <EventList events={events} />
+        )}
       </Grid.Column>
       <Grid.Column width={6}>
-        <EventFilters />
+        <EventFilters setQuery={setQuery} />
       </Grid.Column>
     </Grid>
   )
