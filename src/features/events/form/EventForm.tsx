@@ -6,7 +6,7 @@ import { categoryOptions } from "./categoryOptions";
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker"
 import { AppEvent } from "../../../app/types/events";
-import { Timestamp, collection, doc, setDoc, updateDoc } from "firebase/firestore";
+import { Timestamp, arrayUnion, collection, doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../app/config/firebase";
 import { toast } from "react-toastify";
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore";
@@ -34,6 +34,8 @@ const EventForm = () => {
 
   const { loadDocument, create, update } = useFireStore("events");
   const { status } = useAppSelector((state) => state.events)
+  const { currentUser } = useAppSelector((state) => state.auth)
+
 
 
   useEffect(() => {
@@ -63,11 +65,19 @@ const EventForm = () => {
 
   async function createEvent(data: FieldValues) {
 
+    if (!currentUser) return
+
     const ref = await create({
       ...data,
-      hostedBy: "bob",
-      attendees: [],
-      hostPhotoURL: "",
+      hostUid: currentUser.uid,
+      hostedBy: currentUser.displayName,
+      hostPhotoURL: currentUser.photoUrl,
+      attendees: arrayUnion({
+        id: currentUser.uid,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoUrl
+      }),
+      attendeeIds: arrayUnion(currentUser.uid),
       date: Timestamp.fromDate(data.date as unknown as Date)
     })
 

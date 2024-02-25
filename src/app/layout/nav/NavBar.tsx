@@ -13,18 +13,18 @@ const NavBar = () => {
   const { authenticated } = useAppSelector((state) => state.auth)
 
 
-  function seedData() {
-    sampleData.forEach((async event => {
-      const { id, ...rest } = event;
-      // Функция doc() в Firestore используется для создания ссылки на определенный документ в базе данных Firestore.
-      // db - наша база данных из конфига
-      // events - название коллекции
-      // id - id документа event в коллекции events
-      await setDoc(doc(db, "events", id), {
-        ...rest
-      })
-    }))
-  }
+  // function seedData() {
+  //   sampleData.forEach((async event => {
+  //     const { id, ...rest } = event;
+  //     // Функция doc() в Firestore используется для создания ссылки на определенный документ в базе данных Firestore.
+  //     // db - наша база данных из конфига
+  //     // events - название коллекции
+  //     // id - id документа event в коллекции events
+  //     await setDoc(doc(db, "events", id), {
+  //       ...rest
+  //     })
+  //   }))
+  // }
 
 
   return (
@@ -38,7 +38,7 @@ const NavBar = () => {
         <MenuItem>
           <Button as={NavLink} to="/createEvent" floated="right" positive={true} inverted content="Create event" />
         </MenuItem>
-        {import.meta.env.DEV && (
+        {/* {import.meta.env.DEV && (
           <MenuItem>
             <Button
               inverted
@@ -47,7 +47,7 @@ const NavBar = () => {
               onClick={seedData}
             />
           </MenuItem>
-        )}
+        )} */}
         {authenticated ? <SignedInMenu /> : <SignedOutButtons />}
       </Container>
     </Menu>
