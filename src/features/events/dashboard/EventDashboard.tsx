@@ -53,7 +53,15 @@ const EventDashboard = () => {
 
     // return () => unsubscribe()
 
-    loadCollection(actions)
+    loadCollection(actions, {
+      queries: [
+        {
+          attribute: "date",
+          operator: ">=",
+          value: new Date()
+        }
+      ]
+    })
 
   }, [loadCollection])
 
