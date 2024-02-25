@@ -9,6 +9,7 @@ import { AppEvent } from "../../../app/types/events"
 import { actions } from "../eventSlice"
 import LoadingComponent from "../../../app/layout/LoadingComponent"
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
+import EventFilters from "./EventFilters"
 
 
 
@@ -69,7 +70,7 @@ const EventDashboard = () => {
         <EventList events={events} />
       </Grid.Column>
       <Grid.Column width={6}>
-        <h2>Filters</h2>
+        <EventFilters />
       </Grid.Column>
     </Grid>
   )
