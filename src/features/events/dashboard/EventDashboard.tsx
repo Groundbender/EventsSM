@@ -1,8 +1,8 @@
-import { Grid } from "semantic-ui-react"
+import { Grid, Sticky } from "semantic-ui-react"
 import EventList from "./EventList"
 
 import { useAppDispatch, useAppSelector } from "../../../app/store/store"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { collection, onSnapshot, query } from "firebase/firestore"
 import { db } from "../../../app/config/firebase"
 import { AppEvent } from "../../../app/types/events"
@@ -16,7 +16,7 @@ import EventListItemPlaceholder from "./EventListItemPlaceholder"
 
 
 const EventDashboard = () => {
-
+  const contextRef = useRef()
   const { data: events, status } = useAppSelector(state => state.events)
   // const dispatch = useAppDispatch()
   // const [loading, setLoading] = useState(true)
@@ -74,7 +74,7 @@ const EventDashboard = () => {
 
   return (
     <Grid>
-      <Grid.Column width={10}>
+      <Grid.Column width={10} ref={contextRef}>
         {status === "loading" ? (
           <>
             <EventListItemPlaceholder />
@@ -86,7 +86,12 @@ const EventDashboard = () => {
         )}
       </Grid.Column>
       <Grid.Column width={6}>
-        <EventFilters setQuery={setQuery} />
+        {/* <Sticky context={contextRef.current} offset={98}> */}
+        <div className="ui fixed top sticky" style={{ top: 98, width: 405 }}>
+
+          <EventFilters setQuery={setQuery} />
+        </div>
+        {/* </Sticky> */}
       </Grid.Column>
     </Grid>
   )
