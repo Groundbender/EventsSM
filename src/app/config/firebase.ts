@@ -9,13 +9,18 @@ import { getAuth } from "firebase/auth";
 // storage
 import "firebase/storage"
 import { getStorage } from "firebase/storage";
+ // realtime database
+import "firebase/database"
+import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "events-social-media.firebaseapp.com",
   projectId: "events-social-media",
   storageBucket: "events-social-media.appspot.com",
   messagingSenderId: "338711359481",
-  appId: "1:338711359481:web:55daed468ed84f75b6d728"
+  appId: "1:338711359481:web:55daed468ed84f75b6d728",
+  // realtime database
+  databaseURL: "https://events-social-media-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
 // Initialize Firebase
@@ -29,3 +34,4 @@ export const db = getFirestore(app)
 export const auth = getAuth(app)
 // firebase storage
 export const storage = getStorage(app)   
+export const fb = getDatabase(app)

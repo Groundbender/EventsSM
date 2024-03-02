@@ -6,6 +6,7 @@ import { toast } from "react-toastify"
 import { useState } from "react"
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
 import { arrayRemove, arrayUnion } from "firebase/firestore"
+import { format } from "date-fns"
 
 
 type Props = {
@@ -80,7 +81,7 @@ const EventDetailsHeader = ({ event }: Props) => {
                   content={event.title}
                   style={{ color: 'white' }}
                 />
-                <p>{event.date}</p>
+                <p>{format(new Date(event.date), "dd MMM yyyy, h:mm a")}</p>
                 <p>
                   Hosted by <strong>{event.hostedBy}</strong>
                 </p>

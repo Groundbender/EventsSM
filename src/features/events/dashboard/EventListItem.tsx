@@ -7,6 +7,7 @@ import { toast } from "react-toastify"
 import { deleteDoc, doc } from "firebase/firestore"
 import { db } from "../../../app/config/firebase"
 import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
+import { format } from "date-fns"
 
 
 type Props = {
@@ -62,7 +63,7 @@ const EventListItem = ({ event }: Props) => {
       </Segment>
       <Segment>
         <span>
-          <Icon name="clock" /> {event.date}
+          <Icon name="clock" />{format(new Date(event.date), "dd MMM yyyy, h:mm a")}
           <Icon name="marker" /> {event.venue}
         </span>
       </Segment>
