@@ -29,4 +29,6 @@ export type ChatComment = {
  uid: string
  text: string
  date: number 
+ parentId: string | null
+ childNodes: ChatComment[]
 }

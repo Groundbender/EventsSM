@@ -7,10 +7,12 @@ import { auth, fb } from "../../../app/config/firebase"
 
 type Props = {
   eventId: string
+  parentId?: string | null
+  setReplyForm?: (value: any) => void
 }
 
 
-const ChatForm = ({ eventId }: Props) => {
+const ChatForm = ({ eventId, parentId, setReplyForm }: Props) => {
 
   const { register, reset, handleSubmit, formState: { isSubmitting } } = useForm({
     mode: "onTouched",
@@ -28,9 +30,16 @@ const ChatForm = ({ eventId }: Props) => {
         photoURL: auth.currentUser?.photoURL,
         uid: auth.currentUser?.uid,
         text: data.comment,
-        date: Date.now()
+        date: Date.now(),
+        parentId: parentId || null
       })
       console.log(data)
+      if (parentId && setReplyForm) {
+        setReplyForm({
+          open: false,
+          commentId: null
+        })
+      }
       reset()
     } catch (error) {
       toast.error((error as Error).message)
