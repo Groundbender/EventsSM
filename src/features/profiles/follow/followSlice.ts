@@ -17,9 +17,7 @@ const initialState: State = {
 export const followSlice = createGenericSlice({
   name: "follow",
   initialState: initialState as GenericState<Follow[]>,
-  reducers: {
-    
-  }
+  reducers: {}
 })
 
 export const actions = followSlice.actions

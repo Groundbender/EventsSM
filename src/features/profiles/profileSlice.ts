@@ -33,6 +33,16 @@ export const profileSlice = createGenericSlice({
         payload: mapped
       }
     }
+   },
+   setFollowing: (state, action) => {
+    state.data = state.data.map((profile) => {
+      if (profile.id !== action.payload.id) {
+        return profile
+      } else {
+        profile.isFollowing = action.payload.isFollowing
+        return profile
+      }
+    })
    }
   }
 })

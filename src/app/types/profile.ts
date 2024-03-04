@@ -1,11 +1,12 @@
 export type Profile = {
   id: string
   displayName: string
-  photoUrl: string
+  photoURL: string
   createdAt: string
   description: string
   followerCount?: number
   followingCount?: number
+  isFollowing: boolean
 }
 
 export type Photo = {

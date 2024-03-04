@@ -52,7 +52,7 @@ const PhotoUpload = ({ profile, setEditMode }: Props) => {
             },
             () => {
               getDownloadURL(task.snapshot.ref).then(async (url) => {
-                if (!profile.photoUrl) {
+                if (!profile.photoURL) {
                   await update(profile.id, {
                     photoUrl: url
                   })

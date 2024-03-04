@@ -28,7 +28,7 @@ const ProfilePhotos = ({ profile }: Props) => {
   async function handleSetMain(photo: Photo) {
     // для коллекции
     await update(profile.id, {
-      photoUrl: photo.url
+      photoURL: photo.url
     })
     // для профиля из firebase auth
     await updateProfile(auth.currentUser!, {
@@ -65,8 +65,8 @@ const ProfilePhotos = ({ profile }: Props) => {
                   <Image src={photo.url} />
                   {isCurrentUser && (
                     <Button.Group>
-                      <Button disabled={photo.url === profile.photoUrl} onClick={() => handleSetMain(photo)} basic color="green" >Main</Button>
-                      <Button disabled={photo.url === profile.photoUrl} onClick={() => handleDeletePhoto(photo)} basic color="red" icon="trash" />
+                      <Button disabled={photo.url === profile.photoURL} onClick={() => handleSetMain(photo)} basic color="green" >Main</Button>
+                      <Button disabled={photo.url === profile.photoURL} onClick={() => handleDeletePhoto(photo)} basic color="red" icon="trash" />
                     </Button.Group>
                   )}
 
