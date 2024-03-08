@@ -35,7 +35,8 @@ const EventDashboard = () => {
       limit: 2,
       sort: { attribute: 'date', order: 'asc' },
       pagination: true,
-      reset
+      reset,
+      get: true
     })
 
   }, [loadCollection, query])

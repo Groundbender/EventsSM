@@ -6,6 +6,7 @@ export type CollectionOptions = {
   limit?: number
   pagination?: boolean
   reset?: boolean
+  get?: boolean
 
 }
 

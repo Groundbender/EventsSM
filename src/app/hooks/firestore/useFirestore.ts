@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react"
 import { useAppDispatch } from "../../store/store"
 import { GenericActions } from "../../store/genericSlice"
-import { DocumentData, QueryDocumentSnapshot, collection, deleteDoc, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
+import { DocumentData, QueryDocumentSnapshot, QuerySnapshot, collection, deleteDoc, doc, getDocs, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
 import { db } from "../../config/firebase"
 import { toast } from "react-toastify"
 import { CollectionOptions } from "./types"
@@ -53,32 +53,44 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
 
         // const query = collection(db, path);
         const query = getQuery(path, options, lastDocRef);
+        const data: DocumentData[] = []
 
+        const processQuery = (querySnapshot: QuerySnapshot<DocumentData, DocumentData>) => {
+          console.log(listenersRef.current, "2");
+
+            
+
+          if (querySnapshot.empty) {
+
+              hasMore.current = false;
+
+              dispatch(actions.success([] as unknown as T))
+              return;
+          }
+
+          querySnapshot.forEach((doc) => {
+              data.push({id: doc.id, ...doc.data()})
+          })
+
+          if (options?.pagination && options.limit) {
+              lastDocRef.current = querySnapshot.docs[querySnapshot.docs.length - 1];
+              // hasMore равен false eckb длина документов в колллекции меньше нашего лимита 
+              hasMore.current = !(querySnapshot.docs.length < options.limit)
+          }
+
+          dispatch(actions.success(data as unknown as T))
+        }
+
+      if (options?.get) {
+        // get data 
+        getDocs(query).then(querySnapshot => {
+          processQuery(querySnapshot)
+        })
+      } else {
+        // listen data in real time
         const listener = onSnapshot(query, {
           next: querySnapshot => {
-            console.log(listenersRef.current, "2");
-
-              const data: DocumentData[] = []
-
-              if (querySnapshot.empty) {
-
-                  hasMore.current = false;
-
-                  dispatch(actions.success([] as unknown as T))
-                  return;
-              }
-
-              querySnapshot.forEach((doc) => {
-                  data.push({id: doc.id, ...doc.data()})
-              })
-
-              if (options?.pagination && options.limit) {
-                  lastDocRef.current = querySnapshot.docs[querySnapshot.docs.length - 1];
-                  // hasMore равен false eckb длина документов в колллекции меньше нашего лимита 
-                  hasMore.current = !(querySnapshot.docs.length < options.limit)
-              }
-
-              dispatch(actions.success(data as unknown as T))
+            processQuery(querySnapshot)
           },
           error: error => {
               dispatch(actions.error(error.message))
@@ -93,6 +105,9 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
           name: path,
           unsubsribe: listener
         })
+      }
+
+       
 
   }, [dispatch, path])
 
