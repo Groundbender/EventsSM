@@ -61,6 +61,9 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
               const data: DocumentData[] = []
 
               if (querySnapshot.empty) {
+
+                  hasMore.current = false;
+
                   dispatch(actions.success([] as unknown as T))
                   return;
               }
@@ -68,6 +71,12 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
               querySnapshot.forEach((doc) => {
                   data.push({id: doc.id, ...doc.data()})
               })
+
+              if (options?.pagination && options.limit) {
+                  lastDocRef.current = querySnapshot.docs[querySnapshot.docs.length - 1];
+                  // hasMore равен false eckb длина документов в колллекции меньше нашего лимита 
+                  hasMore.current = !(querySnapshot.docs.length < options.limit)
+              }
 
               dispatch(actions.success(data as unknown as T))
           },

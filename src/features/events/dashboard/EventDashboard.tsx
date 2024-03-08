@@ -63,7 +63,8 @@ const EventDashboard = () => {
     // return () => unsubscribe()
 
     loadCollection(actions, {
-      queries: query
+      queries: query,
+      limit: 2
     })
 
   }, [loadCollection, query])
