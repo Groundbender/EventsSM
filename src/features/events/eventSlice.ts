@@ -19,7 +19,7 @@ export const eventSlice = createGenericSlice({
   reducers: {
     success: {
       reducer: (state, action: PayloadAction<AppEvent[]>) => {
-        state.data = action.payload
+        state.data = [...state.data, ...action.payload]
         state.status = 'finished'
       },
       prepare: (events: any) => {

@@ -1,8 +1,8 @@
-import { Grid, Sticky } from "semantic-ui-react"
+import { Button, Grid, Sticky } from "semantic-ui-react"
 import EventList from "./EventList"
 
 import { useAppDispatch, useAppSelector } from "../../../app/store/store"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { collection, onSnapshot, query } from "firebase/firestore"
 import { db } from "../../../app/config/firebase"
 import { AppEvent } from "../../../app/types/events"
@@ -20,7 +20,7 @@ const EventDashboard = () => {
   const { data: events, status } = useAppSelector(state => state.events)
   // const dispatch = useAppDispatch()
   // const [loading, setLoading] = useState(true)
-  const { loadCollection } = useFireStore("events")
+  const { loadCollection, hasMore } = useFireStore("events")
   const [query, setQuery] = useState<QueryOptions[]>([
     {
       attribute: "date",
@@ -28,6 +28,19 @@ const EventDashboard = () => {
       value: new Date()
     }
   ])
+
+  const loadEvents = useCallback((reset?: boolean) => {
+    loadCollection(actions, {
+      queries: query,
+      limit: 2,
+      sort: { attribute: 'date', order: 'asc' },
+      pagination: true,
+      reset
+    })
+
+  }, [loadCollection, query])
+
+
 
   useEffect(() => {
     // // collection для создания ссылки на коллекцию по имени events 
@@ -62,15 +75,14 @@ const EventDashboard = () => {
 
     // return () => unsubscribe()
 
-    loadCollection(actions, {
-      queries: query,
-      limit: 2
-    })
+    loadEvents(true)
 
-  }, [loadCollection, query])
+  }, [loadEvents])
 
 
-
+  function loadMore() {
+    loadEvents()
+  }
 
 
   return (
@@ -82,8 +94,16 @@ const EventDashboard = () => {
             <EventListItemPlaceholder />
           </>
         ) : (
+          <>
+            <EventList events={events} />
+            <Button
+              content="Load more"
+              color="green"
+              onClick={loadMore}
+              disabled={!hasMore.current}
+            />
 
-          <EventList events={events} />
+          </>
         )}
       </Grid.Column>
       <Grid.Column width={6}>

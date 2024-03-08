@@ -174,7 +174,8 @@ const remove = async (id : string) => {
     create,
     update,
     remove,
-    set
+    set,
+    hasMore
   }
 
 }
