@@ -3,6 +3,10 @@ import { OrderByDirection, WhereFilterOp } from "firebase/firestore"
 export type CollectionOptions = {
   queries?: QueryOptions[]
   sort?: SortOptions
+  limit?: number
+  pagination?: boolean
+  reset?: boolean
+
 }
 
 export type QueryOptions = {

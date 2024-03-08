@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react"
 import { useAppDispatch } from "../../store/store"
 import { GenericActions } from "../../store/genericSlice"
-import { DocumentData, collection, deleteDoc, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
+import { DocumentData, QueryDocumentSnapshot, collection, deleteDoc, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore"
 import { db } from "../../config/firebase"
 import { toast } from "react-toastify"
 import { CollectionOptions } from "./types"
@@ -16,8 +16,9 @@ type ListenerState = {
 export const useFireStore = <T extends DocumentData>(path: string) => {
 
   const listenersRef = useRef<ListenerState[]>([])
-
-
+  // for pagination
+  const lastDocRef = useRef<QueryDocumentSnapshot | null>(null)
+  const hasMore = useRef(true)
   useEffect(() => {
 
       let listenerRefValue: ListenerState[] | null = null;
@@ -43,10 +44,15 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
 
 
   const loadCollection = useCallback((actions: GenericActions<T>, options?: CollectionOptions) => {
+      if (options?.reset) {
+        lastDocRef.current= null
+        hasMore.current = true
+      }
+
         dispatch(actions.loading())
 
         // const query = collection(db, path);
-        const query = getQuery(path, options);
+        const query = getQuery(path, options, lastDocRef);
 
         const listener = onSnapshot(query, {
           next: querySnapshot => {
