@@ -100,14 +100,22 @@ const EventDashboard = () => {
           </>
         ) : (
           <>
-            <EventList events={events} />
-            <Button
+            <EventList
+              events={events}
+              hasMore={hasMore.current}
+              loadMore={loadMore}
+              loading={status === "loading"}
+
+            />
+
+            {/* для доазгрузки по клику  */}
+            {/* <Button
               content="Load more"
               color="green"
               onClick={loadMore}
               disabled={!hasMore.current}
               loading={status === "loading"}
-            />
+            />  */}
 
           </>
         )}
