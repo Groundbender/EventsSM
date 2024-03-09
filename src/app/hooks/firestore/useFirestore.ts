@@ -53,10 +53,11 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
 
         // const query = collection(db, path);
         const query = getQuery(path, options, lastDocRef);
-        const data: DocumentData[] = []
-
         const processQuery = (querySnapshot: QuerySnapshot<DocumentData, DocumentData>) => {
-          console.log(listenersRef.current, "2");
+          const data: DocumentData[] = []
+
+
+          // console.log(listenersRef.current, "2");
 
             
 

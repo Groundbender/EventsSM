@@ -9,6 +9,7 @@ import { actions } from "./photosSlice"
 import { updateProfile } from "firebase/auth"
 import { deleteObject, ref } from "firebase/storage"
 import { toast } from "react-toastify"
+import { batchSetPhoto } from "../../app/actions/firestoreActions"
 
 type Props = {
   profile: Profile
@@ -26,14 +27,15 @@ const ProfilePhotos = ({ profile }: Props) => {
   }, [loadCollection])
 
   async function handleSetMain(photo: Photo) {
-    // для коллекции
-    await update(profile.id, {
-      photoURL: photo.url
-    })
-    // для профиля из firebase auth
-    await updateProfile(auth.currentUser!, {
-      photoURL: photo.url
-    })
+    await batchSetPhoto(photo.url)
+    // // для коллекции
+    // await update(profile.id, {
+    //   photoURL: photo.url
+    // })
+    // // для профиля из firebase auth
+    // await updateProfile(auth.currentUser!, {
+    //   photoURL: photo.url
+    // })
   }
 
   async function handleDeletePhoto(photo: Photo) {

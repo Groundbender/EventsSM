@@ -4,7 +4,7 @@ import { useFireStore } from "../../app/hooks/firestore/useFirestore"
 import { auth, db } from "../../app/config/firebase"
 import { doc, getDoc, increment } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { useAppDispatch } from "../../app/store/store"
+import { useAppDispatch, useAppSelector } from "../../app/store/store"
 import { actions } from "./profileSlice"
 import { toast } from "react-toastify"
 import { batchedFollowToggle } from "../../app/actions/firestoreActions"
@@ -16,6 +16,7 @@ type Props = {
 const ProfileHeader = ({ profile }: Props) => {
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
+  const { currentUser } = useAppSelector(state => state.auth)
   // const { update } = useFireStore("profiles");
   // берем профиль из коллекции по id профиля чтобы увеличить ему followerCount
   // set для обновления подколлекции
@@ -111,26 +112,31 @@ const ProfileHeader = ({ profile }: Props) => {
             <Statistic label="Followers" value={profile.followerCount || 0} />
             <Statistic label="Following" value={profile.followingCount || 0} />
           </Statistic.Group>
-          <Divider />
-          {/* <Button onClick={() => handleFollowToggle(true)} color="teal" content="Follow" />
-          <Button onClick={() => handleFollowToggle(false)} color="red" content="Unfollow" /> */}
-          <Reveal animated="move">
-            <Reveal.Content visible style={{ width: "100%" }}>
-              <Button fluid color="teal" content={profile.isFollowing ? "Following" : "Not following"} />
-            </Reveal.Content>
-            <Reveal.Content hidden style={{ width: "100%" }}>
-              <Button
-                basic
-                fluid
-                color={profile.isFollowing ? "red" : "green"}
+          {currentUser?.uid !== profile.id && (
+            <>
+              <Divider />
 
-                content={profile.isFollowing ? "Unfollow" : "Follow"}
-                onClick={() => handleFollowToggle(!profile.isFollowing)}
-                loading={loading}
+              <Reveal animated="move">
+                <Reveal.Content visible style={{ width: "100%" }}>
+                  <Button fluid color="teal" content={profile.isFollowing ? "Following" : "Not following"} />
+                </Reveal.Content>
+                <Reveal.Content hidden style={{ width: "100%" }}>
+                  <Button
+                    basic
+                    fluid
+                    color={profile.isFollowing ? "red" : "green"}
 
-              />
-            </Reveal.Content>
-          </Reveal>
+                    content={profile.isFollowing ? "Unfollow" : "Follow"}
+                    onClick={() => handleFollowToggle(!profile.isFollowing)}
+                    loading={loading}
+
+                  />
+                </Reveal.Content>
+              </Reveal>
+            </>
+          )}
+
+
         </Grid.Column>
       </Grid>
     </Segment>

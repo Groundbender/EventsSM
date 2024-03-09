@@ -122,7 +122,7 @@ const EventDashboard = () => {
       </Grid.Column>
       <Grid.Column width={6}>
         {/* <Sticky context={contextRef.current} offset={98}> */}
-        <div className="ui fixed top sticky" style={{ top: 98, width: 405 }}>
+        <div className="ui fixed top sticky" style={{ top: 98, width: 405, zIndex: 1 }}>
 
           <EventFilters setQuery={setQuery} />
         </div>
