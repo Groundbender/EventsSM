@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { Button, Header, Item, Segment, Image } from "semantic-ui-react"
 import { AppEvent } from "../../../app/types/events"
 import { useAppSelector } from "../../../app/store/store"
@@ -20,6 +20,10 @@ const EventDetailsHeader = ({ event }: Props) => {
   const { currentUser } = useAppSelector(state => state.auth)
   const [loading, setLoading] = useState(false)
   const { update } = useFireStore("events")
+  const navigate = useNavigate()
+  const location = useLocation()
+
+
 
 
   const eventsImageStyle = {
@@ -36,7 +40,7 @@ const EventDetailsHeader = ({ event }: Props) => {
 
   async function toggleAttendance() {
     if (!currentUser) {
-      toast.error("You must be logged in to attend an event")
+      navigate("/unauthorized", { state: { from: location.pathname } })
       return
     }
     setLoading(true)

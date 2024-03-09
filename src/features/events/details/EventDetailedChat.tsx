@@ -6,6 +6,7 @@ import { onChildAdded, ref } from "firebase/database"
 import { fb } from "../../../app/config/firebase"
 import { Link } from "react-router-dom"
 import { formatDistance } from "date-fns"
+import { useAppSelector } from "../../../app/store/store"
 
 
 type Props = {
@@ -18,6 +19,7 @@ const EventDetailedChat = ({ eventId }: Props) => {
     open: false,
     commentId: null
   })
+
 
 
 
