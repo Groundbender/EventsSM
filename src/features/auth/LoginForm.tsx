@@ -1,15 +1,18 @@
 import { Button, Divider, Form, Label } from "semantic-ui-react"
 import ModalWrapper from "../../app/common/modals/ModalWrapper"
 import { FieldValues, useForm } from "react-hook-form"
-import { useAppDispatch } from "../../app/store/store"
+import { useAppDispatch, useAppSelector } from "../../app/store/store"
 import { closeModal } from "../../app/common/modals/modalSlice"
 import { signIn } from "./authSlice"
 import { signInWithEmailAndPassword } from "@firebase/auth"
 import { auth } from "../../app/config/firebase"
 import SocialLogin from "./SocialLogin"
+import { useNavigate } from "react-router-dom"
 
 const LoginForm = () => {
 
+  const navigate = useNavigate()
+  const { data: location } = useAppSelector((state) => state.modals)
   const { register, handleSubmit, setError, formState: { errors, isSubmitting, isValid, isDirty } } = useForm({
     mode: "onTouched"
   })
@@ -23,7 +26,9 @@ const LoginForm = () => {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       // dispatch(signIn(result.user))
       dispatch(closeModal())
+      console.log(location);
 
+      navigate(location.from)
       // console.log(result);
     } catch (error) {
       console.log(error);
