@@ -12,6 +12,7 @@ import { useFireStore } from "../../../app/hooks/firestore/useFirestore"
 import EventFilters from "./EventFilters"
 import { QueryOptions } from "../../../app/hooks/firestore/types"
 import EventListItemPlaceholder from "./EventListItemPlaceholder"
+import EmptyState from "../../../app/layout/EmptyState"
 
 
 
@@ -100,13 +101,18 @@ const EventDashboard = () => {
           </>
         ) : (
           <>
-            <EventList
-              events={events}
-              hasMore={hasMore.current}
-              loadMore={loadMore}
-              loading={status === "loading"}
+            {events.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <EventList
+                events={events}
+                hasMore={hasMore.current}
+                loadMore={loadMore}
+                loading={status === "loading"}
 
-            />
+              />
+            )}
+
 
             {/* для доазгрузки по клику  */}
             {/* <Button
