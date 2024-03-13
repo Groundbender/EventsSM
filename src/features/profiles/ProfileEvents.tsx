@@ -42,7 +42,8 @@ const ProfileEvents = ({ profile }: Props) => {
     sort: {
       attribute: "date",
       order: "asc"
-    }
+    },
+    reset: true,
   }
 
   const [options, setOptions] = useState<CollectionOptions>(initialOptions)
@@ -69,6 +70,7 @@ const ProfileEvents = ({ profile }: Props) => {
             attribute: "date",
             order: "desc"
           }
+        options.reset = true;
 
 
         break;
@@ -86,12 +88,13 @@ const ProfileEvents = ({ profile }: Props) => {
             attribute: "date",
             order: "asc"
           }
-
+        options.reset = true;
 
         break;
 
       default:
         options = initialOptions
+        options.reset = true;
         break;
     }
     setOptions(options)

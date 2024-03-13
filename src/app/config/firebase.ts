@@ -12,6 +12,14 @@ import { getStorage } from "firebase/storage";
  // realtime database
 import "firebase/database"
 import { getDatabase } from "firebase/database";
+import { ReCaptchaV3Provider, initializeAppCheck } from "firebase/app-check";
+
+
+declare global {
+  
+  var FIREBASE_APPCHECK_DEBUG_TOKEN: boolean | string | undefined
+}
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "events-social-media.firebaseapp.com",
@@ -23,8 +31,18 @@ const firebaseConfig = {
   databaseURL: "https://events-social-media-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
+if (import.meta.env.DEV) {
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true
+}
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+// app check
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider('6LeKQpQpAAAAALkFXe78bYe5gwClnuwsalqqsA9B'),
+  isTokenAutoRefreshEnabled: true
+})
 
 
 // 2 добавляем getFirestore, можно импортировать lite версию с меньшим количеством функций

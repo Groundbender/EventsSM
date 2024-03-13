@@ -20,64 +20,79 @@ const EventFilters = ({ setQuery }: Props) => {
 
 
   function handleSetFilter(filter: string) {
-    if (!currentUser?.uid) return
-
     let q: QueryOptions[];
+    if (!currentUser?.uid) {
+      q = [
+        {
+          attribute: "date",
+          operator: ">=",
+          value: startDate.current
+        }
+      ]
+      setQuery(q)
+      return
+    } else {
+      switch (filter) {
+        case "isGoing":
+          q = [
+            {
+              attribute: "attendeeIds",
+              operator: "array-contains",
+              value: currentUser?.uid
+            },
+            {
+              attribute: "date",
+              operator: ">=",
+              value: startDate.current
+            }
+          ]
 
-    switch (filter) {
-      case "isGoing":
-        q = [
-          {
-            attribute: "attendeeIds",
-            operator: "array-contains",
-            value: currentUser?.uid
-          },
-          {
-            attribute: "date",
-            operator: ">=",
-            value: startDate.current
-          }
-        ]
+          break;
+        case "isHost":
+          q = [
+            {
+              attribute: "hostUid",
+              operator: "==",
+              value: currentUser?.uid
+            },
+            {
+              attribute: "date",
+              operator: ">=",
+              value: startDate.current
+            }
+          ]
+          break;
 
-        break;
-      case "isHost":
-        q = [
-          {
-            attribute: "hostUid",
-            operator: "==",
-            value: currentUser?.uid
-          },
-          {
-            attribute: "date",
-            operator: ">=",
-            value: startDate.current
-          }
-        ]
-        break;
+        default:
+          q = [
+            {
+              attribute: "date",
+              operator: ">=",
+              value: startDate.current
+            }
+          ]
+          break;
+      }
 
-      default:
-        q = [
-          {
-            attribute: "date",
-            operator: ">=",
-            value: startDate.current
-          }
-        ]
-        break;
+      setFilter(filter)
+      setQuery(q)
     }
 
-    setFilter(filter)
-    setQuery(q)
+
+
   }
 
   return (
     <>
-      <Menu vertical size="large" style={{ width: "100%", marginTop: 25 }}>
-        <Header icon="filter" attached color="teal" content="Filters" />
-        <MenuItem onClick={() => handleSetFilter("all")} content="All events" active={filter === "all"} disabled={status === "loading"} />
-        <MenuItem onClick={() => handleSetFilter("isGoing")} content="I'm going" active={filter === "isGoing"} disabled={status === "loading"} />
-        <MenuItem onClick={() => handleSetFilter("isHost")} content="I'm hosting" active={filter === "isHost"} disabled={status === "loading"} />
-      </Menu>
+      {currentUser && (
+        <Menu vertical size="large" style={{ width: "100%", marginTop: 25 }}>
+          <Header icon="filter" attached color="teal" content="Filters" />
+          <MenuItem onClick={() => handleSetFilter("all")} content="All events" active={filter === "all"} disabled={status === "loading"} />
+          <MenuItem onClick={() => handleSetFilter("isGoing")} content="I'm going" active={filter === "isGoing"} disabled={status === "loading"} />
+          <MenuItem onClick={() => handleSetFilter("isHost")} content="I'm hosting" active={filter === "isHost"} disabled={status === "loading"} />
+        </Menu>
+      )}
+
       <Header icon="calendar" attached color="teal" content="Select date" />
       <Calendar
 
